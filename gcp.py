@@ -23,16 +23,16 @@ class GCP:
         self.storage_client = storage.Client().from_service_account_json('fyp-qa-682539a841fd.json')
         self.bucket = self.storage_client.get_bucket(bucket_name)
         self.dc = datastore.Client().from_service_account_json('fyp-qa-682539a841fd.json')
-        print('GCP created')
 
     def upload(self, file):
-        pdf_file_obj = file.read()
+        file_obj = file.read()
         ext = file.filename.split('.')[1]
         para_list = []
         if ext == 'txt':
-            para_list = extract_text_txt(io.BytesIO(pdf_file_obj))
+            para_list = extract_text_txt(file_obj.decode())
+            print(para_list)
         else:
-            para_list = extract_text_pdf(io.BytesIO(pdf_file_obj))
+            para_list = extract_text_pdf(io.BytesIO(file_obj))
 
         doc_id = self.insert(kind_doc, {'filename': file.filename, 'paragraph': para_list})
 
@@ -68,7 +68,7 @@ class GCP:
     def insert(self, kind, data):
         with self.dc.transaction():
             key = self.dc.key(kind)
-            record = datastore.Entity(key=key)
+            record = datastore.Entity(key=key, exclude_from_indexes=['paragraph'])
             record.update(data)
             self.dc.put(record)
         return record.key.id

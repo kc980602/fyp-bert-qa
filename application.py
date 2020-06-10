@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+import flask_cors
 
 from bert import QA
 from gcp import GCP
 
 app = Flask(__name__)
-CORS(app)
+flask_cors.CORS(app)
 
 model = QA()
 gcp = GCP()
@@ -76,4 +76,4 @@ def get_answer(qa_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
