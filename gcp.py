@@ -20,9 +20,9 @@ def hash_generator(size=6, chars=string.ascii_uppercase + string.digits):
 class GCP:
 
     def __init__(self):
-        self.storage_client = storage.Client().from_service_account_json('fyp-qa-682539a841fd.json')
+        self.storage_client = storage.Client().from_service_account_json('fyp-qa-eb7816dfb87e.json')
         self.bucket = self.storage_client.get_bucket(bucket_name)
-        self.dc = datastore.Client().from_service_account_json('fyp-qa-682539a841fd.json')
+        self.dc = datastore.Client().from_service_account_json('fyp-qa-eb7816dfb87e.json')
 
     def upload(self, file):
         file_obj = file.read()
