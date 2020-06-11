@@ -24,6 +24,7 @@ class QA:
     def __init__(self):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.model = TFBertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+        print('QA init done')
 
     def predict(self, para_list, question):
         text_id = find_best_match_para(para_list, question)

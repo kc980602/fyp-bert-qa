@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 import flask_cors
+import os
 
 from bert import QA
 from gcp import GCP
 
-app = Flask(__name__)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "fyp-qa-eb7816dfb87e.json"
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
+app = Flask(__name__, static_url_path='/static')
 flask_cors.CORS(app)
 
 model = QA()
