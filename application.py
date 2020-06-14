@@ -70,6 +70,7 @@ def get_answer(qa_id):
                 count += len(doc['paragraph'])
                 if text_id < count:
                     text_doc = doc
+                    break
             text_doc['paragraph'] = []
 
             return jsonify({"success": True, 'answer': {'doc': text_doc, 'text': text, 'ans': ans.replace('#', '')}})
