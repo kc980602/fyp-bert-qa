@@ -11,3 +11,7 @@ fyp-qa-682539a841fd.json
 *.json
 
 static/.well-known/acme-challenge/
+
+/prediction/
+/data/
+/output/

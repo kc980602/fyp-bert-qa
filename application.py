@@ -15,6 +15,23 @@ model = QA()
 gcp = GCP()
 
 
+@app.route("/file/raw", methods=['POST'])
+def file_upload_raw():
+    try:
+        filename = request.json["filename"]
+        text = request.json["text"]
+
+        if filename == '' or text == '':
+            return 'No file text or name empty .', 400
+
+        doc_id = gcp.uploadRaw(filename, text)
+
+        return jsonify({'success': True, 'id': doc_id})
+    except Exception as e:
+        print(e)
+        return jsonify({"success": False})
+
+
 @app.route("/file/upload", methods=['POST'])
 def file_upload():
     try:
@@ -81,4 +98,4 @@ def get_answer(qa_id):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

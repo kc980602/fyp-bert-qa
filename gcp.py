@@ -29,7 +29,6 @@ class GCP:
         para_list = []
         if ext == 'txt':
             para_list = extract_text_txt(file_obj.decode())
-            print(para_list)
         else:
             para_list = extract_text_pdf(io.BytesIO(file_obj))
 
@@ -42,6 +41,13 @@ class GCP:
             content_type=file.content_type
         )
         return doc_id
+
+    def uploadRaw(self, filename, text):
+        para_list = extract_text_txt(text)
+        if len(para_list):
+            doc_id = self.insert(kind_doc, {'filename': filename, 'paragraph': para_list})
+            return doc_id
+        return False
 
     def get_doc_records(self, doc_ids):
         docs = self.get_multi(kind_doc, doc_ids)
