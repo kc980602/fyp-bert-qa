@@ -49,7 +49,7 @@ def get_para(row):
         print('Error:', row)
     return text
 
-data = pd.read_csv('data/newsqa_combined-newsqa-data-v1.csv', sep=',')
+data = pd.read_csv('../data/newsqa_combined-newsqa-data-v1.csv', sep=',')
 #   filter empty question, assume is not null before using the QA bot
 data = data.loc[data['question'].notnull()]
 #   print data info
@@ -58,4 +58,4 @@ data.info()
 tqdm.pandas()
 data['para_text'] = data.progress_apply(get_para, axis=1)
 #   export result
-data.to_csv('output/newsqa_w_para.csv')
+data.to_csv('../output/newsqa_w_para.csv')

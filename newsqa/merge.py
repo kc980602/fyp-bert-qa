@@ -1,7 +1,7 @@
 import pandas as pd
 import glob
 
-path = 'prediction'
+path = '../prediction'
 all_files = glob.glob(path + "/**/*.csv", recursive=True)
 
 li = []
@@ -15,4 +15,4 @@ data = pd.concat(li, axis=0, ignore_index=True)
 data = data.drop_duplicates(subset=['story_id', 'question'])
 data = data.drop(['Unnamed: 0', 'Unnamed: 0.1'], axis=1)
 data.info()
-data.to_csv('output/pred_ans.csv')
+data.to_csv('../output/pred_ans.csv')

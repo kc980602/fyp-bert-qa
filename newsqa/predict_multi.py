@@ -24,7 +24,7 @@ def predict(row):
     return answer
 
 
-data = pd.read_csv('newsqa_w_para.csv', sep=',')
+data = pd.read_csv('../output/newsqa_w_para.csv', sep=',')
 #   limit data size
 # data_st, data_ed = 100000, 0
 # data = data.iloc[data_st:]
@@ -45,7 +45,7 @@ try:
             chunk['pred_ans'] = chunk.progress_apply(predict, axis=1)
 
             fname = 'pred_ans_{}.csv'.format(str(idx))
-            chunk.to_csv('./prediction/{}'.format(fname))
+            chunk.to_csv('../prediction/{}'.format(fname))
 
 except RuntimeError as e:
     print(e)

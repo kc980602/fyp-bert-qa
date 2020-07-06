@@ -15,3 +15,8 @@ static/.well-known/acme-challenge/
 /prediction/
 /data/
 /output/
+
+para/
+newsqa_w_para/
+
+prediction_v2/

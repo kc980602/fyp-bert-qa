@@ -16,5 +16,7 @@ def extract_text_pdf(pdf):
 
     text = text.split('[SEP]')
 
-    result = [line for line in text if len(line.split(' ')) > 8 and line.strip() != '']
+    # result = [line for line in text if len(line.split(' ')) > 8 and line.strip() != '']
+    result = [line for line in text if line.strip() != '']
+
     return result
