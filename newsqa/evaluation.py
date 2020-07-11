@@ -1,9 +1,30 @@
+import string
+
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm import tqdm
 import numpy
 import re
 import pandas as pd
+
+
+def normalize_answer(s):
+    """Lower text and remove punctuation, articles and extra whitespace."""
+
+    def remove_articles(text):
+        return re.sub(r'\b(a|an|the)\b', ' ', text)
+
+    def white_space_fix(text):
+        return ' '.join(text.split())
+
+    def remove_punc(text):
+        exclude = set(string.punctuation)
+        return ''.join(ch for ch in text if ch not in exclude)
+
+    def lower(text):
+        return text.lower()
+
+    return white_space_fix(remove_articles(remove_punc(lower(s))))
 
 
 def similarity(answers):
@@ -30,43 +51,44 @@ def get_answers(row):
 
 
 def classification(row):
-    result = 2
+    result = 0
 
-    #   for good question and answer
-    if (row.is_question_bad != '1.0') | (row.is_answer_absent <= 0.5):
-        if row.pred_ans not in [numpy.nan, None]:
-            answers = [row.pred_ans] + get_answers(row)
-            answers = [re.sub(r'[^A-Za-z0-9\s]+', '', text.replace('\n', '').strip().lower()) for text in answers]
+    if row.pred_ans not in [numpy.nan, None]:
+        answers = [row.pred_ans] + get_answers(row)
+        answers = [normalize_answer(text) for text in answers]
 
-            try:
-                result = similarity(answers)
-            except:
-                #   extra checking for number/single char ans, TfidfVectorizer don't support this cases
-                result = int(answers[0] in answers[1:])
+        try:
+            result = similarity(answers)
+        except:
+            #   extra checking for number/single char ans, TfidfVectorizer don't support this cases
+            result = int(answers[0] in answers[1:])
 
-            #   extra checking
-            if result == 0:
-                pred = answers[0]
-                for text in answers[1:]:
-                    if pred.count(text) > 0 or text.count(pred) > 0 or re.sub('\W+', '', pred) == text or (
-                            text[-1] == 's' and pred.count(text[0:-1]) > 0):
-                        result = 1
-                        break
+        #   extra checking
+        if result == 0:
+            pred = answers[0]
+            for text in answers[1:]:
+                if pred.count(text) > 0 or text.count(pred) > 0 or re.sub('\W+', '', pred) == text or (
+                        text[-1] == 's' and pred.count(text[0:-1]) > 0):
+                    result = 1
+                    break
+    else:
+        if len(get_answers(row)):
+            result = 1
 
     return result
 
 
 def exact_match(row):
-    result = 2
+    result = 0
 
-    #   for good question and answer
-    if (row.is_question_bad != '1.0') | (row.is_answer_absent <= 0.5):
-        if row.pred_ans not in [numpy.nan, None]:
-            answers = [row.pred_ans] + get_answers(row)
-            answers = [re.sub(r'\b(?:a|an|the)\b|[^A-Za-z0-9\s]+', '', text.replace('\n', '').strip().lower()) for text
-                       in answers]
+    if row.pred_ans not in [numpy.nan, None]:
+        answers = [row.pred_ans] + get_answers(row)
+        answers = [normalize_answer(text) for text in answers]
 
-            result = int(answers[0] in answers[1:])
+        result = int(answers[0] in answers[1:])
+    else:
+        if len(get_answers(row)):
+            result = 1
     return result
 
 
@@ -105,33 +127,30 @@ def correct_para(row):
     return 0
 
 
-version = ''
-# data = pd.read_csv('../output/pred_ans{}.csv'.format(version), sep=',')
-# data = data.drop(columns=['Unnamed: 0'])
+version = '_v3'
+data = pd.read_csv('../output/pred_ans{}.csv'.format(version), sep=',')
+data = data.drop(columns=['Unnamed: 0'])
 tqdm.pandas()
-# data['exact_match'] = data.progress_apply(exact_match, axis=1)
-# data['class'] = data.progress_apply(classification, axis=1)
-# data.info()
-#
-# data.to_csv('../output/pred_ans_w_class{}.csv'.format(version))
-
-data = pd.read_csv('../output/pred_ans_w_class{}.csv'.format(version), sep=',')
+data['exact_match'] = data.progress_apply(exact_match, axis=1)
+data['class'] = data.progress_apply(classification, axis=1)
 data['is_correct_para'] = data.progress_apply(correct_para, axis=1)
+
+data.info()
 
 #   figures
 total = data.shape[0]
 correct = data[data['class'] == 1].shape[0]
-returned = data[data['class'] != 2 & data['pred_ans'].notnull()].shape[0]
-should_return = data[data['class'] != 2].shape[0]
+returned = data[data['pred_ans'].notnull()].shape[0]
+should_return = data[(data['is_question_bad'] == '1.0') | (data['is_answer_absent'] == 1)].shape[0]
 is_correct_para = data[data['is_correct_para'] == 1].shape[0]
 
 precision = correct / returned
 recall = correct / should_return
 f1 = 2 * (precision * recall) / (precision + recall)
 em = data[data['exact_match'] == 1].shape[0] / should_return
-print(is_correct_para)
+
 print(
-    'Total: {}\nCorrect: {} [{}]\nReturned: {} [{}]\nShould Return: {} [{}]\nPrecision: {}\nRecall: {}\nF1 Score: {}\nEM Score: {}'
+    'Total: {}\nCorrect: {} [{}]\nReturned: {} [{}]\nShould Return: {} [{}]\nPrecision: {}\nRecall: {}\nF1 Score: {}\nEM Score: {}\nIs Correct Para: {} [{}]'
         .format(
         total,
         correct / total,
@@ -143,9 +162,9 @@ print(
         precision,
         recall,
         f1,
-        em
+        em,
+        is_correct_para / should_return,
+        is_correct_para
     ))
 
-#   class sorted
-# data_sorted = data.sort_values(by=['class'])
-# data_sorted.to_csv('../output/pred_ans_class_sort.csv')
+data.to_csv('../output/pred_ans_w_eva{}.csv'.format(version))

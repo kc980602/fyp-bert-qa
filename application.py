@@ -24,7 +24,7 @@ def file_upload_raw():
         if filename == '' or text == '':
             return 'No file text or name empty .', 400
 
-        doc_id = gcp.uploadRaw(filename, text)
+        doc_id = gcp.upload_raw(filename, text)
 
         return jsonify({'success': True, 'id': doc_id})
     except Exception as e:

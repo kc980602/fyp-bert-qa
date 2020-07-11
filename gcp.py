@@ -42,7 +42,7 @@ class GCP:
         )
         return doc_id
 
-    def uploadRaw(self, filename, text):
+    def upload_raw(self, filename, text):
         para_list = extract_text_txt(text)
         if len(para_list):
             doc_id = self.insert(kind_doc, {'filename': filename, 'paragraph': para_list})

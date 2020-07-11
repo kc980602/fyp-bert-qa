@@ -1,34 +1,34 @@
 import pandas as pd
 
-v2 = pd.read_csv('../output/pred_ans_v2.csv', sep=',')
-v1 = pd.read_csv('../output/pred_ans.csv', sep=',')
-
-# data = data.loc[data['para_text'].isnull()]
-
-v2_x = v2.loc[(v2['is_question_bad'] != '1.0') | (v2['is_answer_absent'] <= 0.5)]
-v1_x = v1.loc[(v1['is_question_bad'] != '1.0') | (v1['is_answer_absent'] <= 0.5)]
-
-print(v2_x.shape[0], v1_x.shape[0])
-
-v2 = v2[['story_id', 'question', 'is_question_bad','is_answer_absent']]
-v1 = v1[['story_id', 'question', 'is_question_bad','is_answer_absent']]
-
-v2.info()
-v1.info()
-
-print(v2.groupby(['story_id', 'question']).ngroups)
-print(v1.groupby(['story_id', 'question']).ngroups)
-
-data = pd.concat([v1,v2]).drop_duplicates(keep=False)
+data = pd.read_csv('../output/pred_ans_w_eva_v3.csv', sep=',')
 
 
-data.info()
+#   figures
+total = data.shape[0]
+correct = data[data['class'] == 1].shape[0]
+returned = data[data['pred_ans'].notnull()].shape[0]
+should_return = data[(data['is_question_bad'] != '1.0') & (data['is_answer_absent'] != 1)].shape[0]
+is_correct_para = data[data['is_correct_para'] == 1].shape[0]
 
-# for row in data.iterrows():
-#     print(row)
+precision = correct / returned
+recall = correct / should_return
+f1 = 2 * (precision * recall) / (precision + recall)
+em = data[data['exact_match'] == 1].shape[0] / should_return
 
-#
-# duplicateDFRow = data_or[data_or.duplicated()]
-# print(duplicateDFRow)
-
-# data.to_csv('../output/newsqa_w_para_v2_null.csv')
+print(
+    'Total: {}\nCorrect: {} [{}]\nReturned: {} [{}]\nShould Return: {} [{}]\nPrecision: {}\nRecall: {}\nF1 Score: {}\nEM Score: {}\nIs Correct Para: {} [{}]'
+        .format(
+        total,
+        correct / total,
+        correct,
+        returned / total,
+        returned,
+        should_return / total,
+        should_return,
+        precision,
+        recall,
+        f1,
+        em,
+        is_correct_para / should_return,
+        is_correct_para
+    ))

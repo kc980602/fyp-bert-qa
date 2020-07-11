@@ -1,7 +1,7 @@
 import pandas as pd
 import glob
 
-path = '../prediction_v2'
+path = '../prediction_v3'
 all_files = glob.glob(path + "/**/*.csv", recursive=True)
 
 li = []
@@ -26,4 +26,4 @@ if 'Unnamed: 0.1' in data.columns:
 
 data.info()
 # data.to_csv('../output/newsqa_w_para_v2.csv')
-data.to_csv('../output/pred_ans_v2.csv')
+data.to_csv('../output/pred_ans_v3.csv')

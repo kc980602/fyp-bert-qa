@@ -34,18 +34,13 @@ data.info()
 chunk_size = int(data.shape[0] / 100)
 chunks = [data[i:i + chunk_size] for i in range(0, data.shape[0], chunk_size)]
 
-try:
-    with tf.device('/device:GPU:0'):
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        model = TFBertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = TFBertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 
-        for idx, chunk in enumerate(chunks):
-            tqdm.pandas()
+for idx, chunk in enumerate(chunks):
+    tqdm.pandas()
 
-            chunk['pred_ans'] = chunk.progress_apply(predict, axis=1)
+    chunk['pred_ans'] = chunk.progress_apply(predict, axis=1)
 
-            fname = 'pred_ans_{}.csv'.format(str(idx))
-            chunk.to_csv('../prediction/{}'.format(fname))
-
-except RuntimeError as e:
-    print(e)
+    fname = 'pred_ans_{}.csv'.format(str(idx))
+    chunk.to_csv('../prediction/{}'.format(fname))

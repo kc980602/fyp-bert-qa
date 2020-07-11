@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-d_pred = pd.read_csv('../output/pred_ans_w_class.csv', sep=',')
+d_pred = pd.read_csv('../output/pred_ans_w_eva_v3.csv', sep=',')
 d_pred = d_pred.fillna('')
 d_pred_cross = pd.crosstab(d_pred['story_id'], d_pred['class'])
 
