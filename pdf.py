@@ -3,7 +3,7 @@ from pdfminer.high_level import extract_text
 
 def extract_text_txt(txt):
     text = txt.replace('\r', '')
-    text = text.split('\n')
+    text = text.split('\n\n')
     result = [line for line in text if line.strip() != '']
     return result
 
