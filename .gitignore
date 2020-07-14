@@ -7,8 +7,7 @@ __pycache__/
 
 venv/
 
-fyp-qa-682539a841fd.json
-*.json
+fyp-qa-eb7816dfb87e.json
 
 static/.well-known/acme-challenge/
 
@@ -21,3 +20,5 @@ newsqa_w_para/
 
 prediction_v2/
 prediction_v3/
+
+fypbertqa.sock
