@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/kc980602/fyp-bert-qa/master/logo.svg" width="400"/>
+    <img src="https://raw.githubusercontent.com/kc980602/fyp-bert-qa/master/logo.svg" width="200"/>
     <br>
 <p>
 
@@ -23,3 +23,10 @@ https://github.com/kc980602/fyp-bert-qa-ui
 * numpy
 * pandas
 * nltk
+
+
+<p align="center">
+    <br>
+    <img src="https://raw.githubusercontent.com/kc980602/fyp-bert-qa/master/sys_arch.svg" width="100%"/>
+    <br>
+<p>
