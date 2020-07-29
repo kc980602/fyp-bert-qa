@@ -27,6 +27,6 @@ https://github.com/kc980602/fyp-bert-qa-ui
 
 <p align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/kc980602/fyp-bert-qa/master/sys_arch.svg" width="100%"/>
+    <img src="https://raw.githubusercontent.com/kc980602/fyp-bert-qa/master/sys_arch.png" width="100%"/>
     <br>
 <p>
