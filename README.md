@@ -4,3 +4,16 @@
 
 Frontend project
 https://github.com/kc980602/fyp-bert-qa-ui
+
+
+* Flask
+* transformers
+* tensorflow
+* google-cloud-storage
+* google-cloud-datastore
+* pdfminer.six
+* sklearn
+* scikit-learn
+* numpy
+* pandas
+* nltk
